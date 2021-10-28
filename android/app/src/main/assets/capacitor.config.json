@@ -1,0 +1,6 @@
+{
+	"appId": "io.ionic.starter",
+	"appName": "ionic-capacitor-barcode-scanner",
+	"webDir": "www",
+	"bundledWebRuntime": false
+}
