@@ -4,6 +4,8 @@ import { AlertController, Platform } from '@ionic/angular';
 import { BarcodeScanner } from '@capacitor-community/barcode-scanner';
 import { DataService } from '../services/data.service';
 
+import { Device } from '@capacitor/device';
+
 @Component({
   selector: 'app-home',
   templateUrl: 'home.page.html',
@@ -17,6 +19,7 @@ export class HomePage implements OnInit, AfterViewInit, OnDestroy {
   compounds: any[] = [];
 
   data: any;
+  device: any = {};
 
   constructor(
     private alertCtrl: AlertController,
@@ -24,19 +27,19 @@ export class HomePage implements OnInit, AfterViewInit, OnDestroy {
     private dataService: DataService
   ) {}
 
-  ngOnInit() {
-
+  async ngOnInit() {
     this.dataService.getCompounds()
       .subscribe(res => {
         this.compounds = res;
       });
 
-      /*
-      this.dataService.getData()
-        .subscribe(res => this.data = res);
-        */
+    const uuid = (await Device.getId()).uuid;
+    const name = (await Device.getInfo()).name;
 
-
+    this.device = {
+      uuid,
+      name
+    };
   }
 
   ngAfterViewInit() {

@@ -28,5 +28,16 @@
     </li>
   </ul>
 
+  <ion-list *ngIf="device">
+    <ion-item>
+      <ion-label>UUID</ion-label>
+      <ion-note>{{ device.uuid }}</ion-note>
+    </ion-item>
+    <ion-item>
+      <ion-label>NAME</ion-label>
+      <ion-note>{{ device.name }}</ion-note>
+    </ion-item>
+  </ion-list>
+
   <!-- <div *ngIf="data">{{ data.name }}</div> -->
 </ion-content>
