@@ -1,7 +1,8 @@
 import { AfterViewInit, Component, OnDestroy, OnInit } from '@angular/core';
-import { AlertController } from '@ionic/angular';
+import { AlertController, Platform } from '@ionic/angular';
 
 import { BarcodeScanner } from '@capacitor-community/barcode-scanner';
+import { DataService } from '../services/data.service';
 
 @Component({
   selector: 'app-home',
@@ -13,15 +14,36 @@ export class HomePage implements OnInit, AfterViewInit, OnDestroy {
   result = null;
   scanActive = false;
 
+  compounds: any[] = [];
+
+  data: any;
+
   constructor(
     private alertCtrl: AlertController,
+    private platform: Platform,
+    private dataService: DataService
   ) {}
 
   ngOnInit() {
 
+    this.dataService.getCompounds()
+      .subscribe(res => {
+        this.compounds = res;
+      });
+
+      /*
+      this.dataService.getData()
+        .subscribe(res => this.data = res);
+        */
+
+
   }
 
   ngAfterViewInit() {
+    if (this.platform.is('mobileweb')) {
+      console.warn('Debe estar en un dispositivo para activar usar el scanner.');
+      return;
+    }
     BarcodeScanner.prepare();
   }
 

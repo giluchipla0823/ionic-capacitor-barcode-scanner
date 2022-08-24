@@ -21,4 +21,12 @@
   </ion-row>
  
   <div class="scan-box" [hidden]="!scanActive"></div>
+
+  <ul>
+    <li *ngFor="let item of compounds">
+      {{ item.name }}
+    </li>
+  </ul>
+
+  <!-- <div *ngIf="data">{{ data.name }}</div> -->
 </ion-content>

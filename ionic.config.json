@@ -3,5 +3,11 @@
   "integrations": {
     "capacitor": {}
   },
-  "type": "angular"
+  "type": "angular",
+  "proxies": [
+    {
+       "path": "/api_laravel",
+       "proxyUrl": "https://test.dfoctrading.com/mobileapi/public/api/"
+    }
+ ]
 }
