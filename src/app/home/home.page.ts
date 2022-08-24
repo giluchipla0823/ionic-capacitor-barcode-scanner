@@ -6,6 +6,9 @@ import { DataService } from '../services/data.service';
 
 import { Device } from '@capacitor/device';
 
+import { Uid } from '@ionic-native/uid/ngx';
+import { AndroidPermissions } from '@ionic-native/android-permissions/ngx';
+
 @Component({
   selector: 'app-home',
   templateUrl: 'home.page.html',
@@ -24,7 +27,9 @@ export class HomePage implements OnInit, AfterViewInit, OnDestroy {
   constructor(
     private alertCtrl: AlertController,
     private platform: Platform,
-    private dataService: DataService
+    private dataService: DataService,
+    private uid: Uid,
+    private androidPermissions: AndroidPermissions,
   ) {}
 
   async ngOnInit() {
@@ -33,13 +38,7 @@ export class HomePage implements OnInit, AfterViewInit, OnDestroy {
         this.compounds = res;
       });
 
-    const uuid = (await Device.getId()).uuid;
-    const name = (await Device.getInfo()).name;
-
-    this.device = {
-      uuid,
-      name
-    };
+    this.getPermission();
   }
 
   ngAfterViewInit() {
@@ -48,6 +47,53 @@ export class HomePage implements OnInit, AfterViewInit, OnDestroy {
       return;
     }
     BarcodeScanner.prepare();
+  }
+
+  async getPermission(){
+    this.androidPermissions.checkPermission(
+      this.androidPermissions.PERMISSION.READ_PHONE_STATE
+    ).then(async (res) => {
+      if(res.hasPermission){
+        this.deviceInfo();
+      }else{
+        this.androidPermissions.requestPermission(this.androidPermissions.PERMISSION.READ_PHONE_STATE)
+          .then(() => this.deviceInfo())
+          .catch(async (error) => {
+            const alert = await this.alertCtrl.create({
+              header: 'No permission',
+              message: 'ERROR - 01',
+              buttons: [{
+                text: 'No',
+                role: 'cancel'
+              },
+              {
+                text: 'Open Settings',
+                handler: () => {
+                }
+              }]
+            });
+
+            await alert.present();
+        });
+      }
+    })
+    .catch(async (error) => {
+      const alert = await this.alertCtrl.create({
+        header: 'No permission',
+        message: 'ERROR - 02',
+        buttons: [{
+          text: 'No',
+          role: 'cancel'
+        },
+        {
+          text: 'Open Settings',
+          handler: () => {
+          }
+        }]
+      });
+
+      await alert.present();
+    });
   }
 
   async startScanner() {
@@ -103,6 +149,31 @@ export class HomePage implements OnInit, AfterViewInit, OnDestroy {
 
   ngOnDestroy() {
     BarcodeScanner.stopScan();
+  }
+
+  getIDUID(type: string) {
+    if(type === 'IMEI'){
+      return this.uid.IMEI;
+    }else if(type === 'ICCID'){
+      return this.uid.ICCID;
+    }else if(type === 'IMSI'){
+      return this.uid.IMSI;
+    }else if(type === 'MAC'){
+      return this.uid.MAC;
+    }else if(type === 'UUID'){
+      return this.uid.UUID;
+    }
+  }
+
+  private async deviceInfo() {
+    const uuid = (await Device.getId()).uuid;
+    const name = (await Device.getInfo()).name;
+
+    this.device = {
+      uuid,
+      name,
+      imei: this.getIDUID('IMEI') || 'desconocido'
+    };
   }
 
 }
