@@ -23,6 +23,7 @@ export class HomePage implements OnInit, AfterViewInit, OnDestroy {
 
   data: any;
   device: any = {};
+  grantedPermissionReadPhoneState = false;
 
   constructor(
     private alertCtrl: AlertController,
@@ -30,7 +31,7 @@ export class HomePage implements OnInit, AfterViewInit, OnDestroy {
     private dataService: DataService,
     private uid: Uid,
     private androidPermissions: AndroidPermissions,
-  ) {}
+  ) { }
 
   async ngOnInit() {
     this.dataService.getCompounds()
@@ -38,7 +39,7 @@ export class HomePage implements OnInit, AfterViewInit, OnDestroy {
         this.compounds = res;
       });
 
-    this.getPermission();
+    this.deviceInfo();
   }
 
   ngAfterViewInit() {
@@ -49,52 +50,52 @@ export class HomePage implements OnInit, AfterViewInit, OnDestroy {
     BarcodeScanner.prepare();
   }
 
-  async getPermission(){
-    this.androidPermissions.checkPermission(
-      this.androidPermissions.PERMISSION.READ_PHONE_STATE
-    ).then(async (res) => {
-      if(res.hasPermission){
-        this.deviceInfo();
-      }else{
-        this.androidPermissions.requestPermission(this.androidPermissions.PERMISSION.READ_PHONE_STATE)
-          .then(() => this.deviceInfo())
-          .catch(async (error) => {
-            const alert = await this.alertCtrl.create({
-              header: 'No permission',
-              message: 'ERROR - 01',
-              buttons: [{
-                text: 'No',
-                role: 'cancel'
-              },
-              {
-                text: 'Open Settings',
-                handler: () => {
-                }
-              }]
-            });
+  // async getPermission() {
+  //   this.androidPermissions.checkPermission(
+  //     this.androidPermissions.PERMISSION.READ_PHONE_STATE
+  //   ).then(async (res) => {
+  //     if (res.hasPermission) {
+  //       this.deviceInfo();
+  //     } else {
+  //       this.androidPermissions.requestPermission(this.androidPermissions.PERMISSION.READ_PHONE_STATE)
+  //         .then(() => this.deviceInfo())
+  //         .catch(async (error) => {
+  //           const alert = await this.alertCtrl.create({
+  //             header: 'No permission',
+  //             message: 'ERROR - 01',
+  //             buttons: [{
+  //               text: 'No',
+  //               role: 'cancel'
+  //             },
+  //             {
+  //               text: 'Open Settings',
+  //               handler: () => {
+  //               }
+  //             }]
+  //           });
 
-            await alert.present();
-        });
-      }
-    })
-    .catch(async (error) => {
-      const alert = await this.alertCtrl.create({
-        header: 'No permission',
-        message: 'ERROR - 02',
-        buttons: [{
-          text: 'No',
-          role: 'cancel'
-        },
-        {
-          text: 'Open Settings',
-          handler: () => {
-          }
-        }]
-      });
+  //           await alert.present();
+  //         });
+  //     }
+  //   })
+  //     .catch(async (error) => {
+        // const alert = await this.alertCtrl.create({
+        //   header: 'No permission',
+        //   message: 'ERROR - 02',
+        //   buttons: [{
+        //     text: 'No',
+        //     role: 'cancel'
+        //   },
+        //   {
+        //     text: 'Open Settings',
+        //     handler: () => {
+        //     }
+        //   }]
+        // });
 
-      await alert.present();
-    });
-  }
+  //       await alert.present();
+  //     });
+  // }
 
   async startScanner() {
     const allowed = await this.checkPermission();
@@ -151,29 +152,55 @@ export class HomePage implements OnInit, AfterViewInit, OnDestroy {
     BarcodeScanner.stopScan();
   }
 
-  getIDUID(type: string) {
-    if(type === 'IMEI'){
-      return this.uid.IMEI;
-    }else if(type === 'ICCID'){
-      return this.uid.ICCID;
-    }else if(type === 'IMSI'){
-      return this.uid.IMSI;
-    }else if(type === 'MAC'){
-      return this.uid.MAC;
-    }else if(type === 'UUID'){
-      return this.uid.UUID;
+  async getImei() {
+    const { hasPermission } = await this.androidPermissions.checkPermission(
+      this.androidPermissions.PERMISSION.READ_PHONE_STATE
+    );
+
+    if (!hasPermission) {
+      const result = await this.androidPermissions.requestPermission(
+        this.androidPermissions.PERMISSION.READ_PHONE_STATE
+      );
+
+      if (!result.hasPermission) {
+        const alert = await this.alertCtrl.create({
+          message: 'Debe brindar permisos para obtener el IMEI del dispositivo',
+          buttons: [
+            {
+              text: 'OK',
+              role: 'confirmed',
+            }
+          ]
+        });
+
+        await alert.present();
+
+        alert.onDidDismiss().then(({ role }) => {
+          this.getImei();
+        });
+      }
+
+      // ok, a user gave us permission, we can get him identifiers after restart app
+      return;
     }
+
+    this.grantedPermissionReadPhoneState = true;
+
+    return this.uid.IMEI;
   }
 
   private async deviceInfo() {
+    const imei = await this.getImei();
     const uuid = (await Device.getId()).uuid;
     const name = (await Device.getInfo()).name;
 
-    this.device = {
-      uuid,
-      name,
-      imei: this.getIDUID('IMEI') || 'desconocido'
-    };
+    if (this.grantedPermissionReadPhoneState) {
+      this.device = {
+        uuid,
+        name,
+        imei
+      };
+    }
   }
 
 }
