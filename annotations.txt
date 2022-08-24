@@ -1,0 +1,7 @@
+# Get Imei
+
+npm install cordova-plugin-android-permissions 
+npm install @awesome-cordova-plugins/android-permissions 
+
+npm install cordova-plugin-uid
+npm install @ionic-native/uid
