@@ -5,3 +5,6 @@ npm install @awesome-cordova-plugins/android-permissions
 
 npm install cordova-plugin-uid
 npm install @ionic-native/uid
+
+https://www.angularfix.com/2022/01/ionic-5-how-to-get-serial-number-of.html
+https://www.freakyjolly.com/ionic-4-get-unique-device-id-other-uids-of-uuid-imei-imsi-iccid-and-mac-using-native-cordova-plugins/
