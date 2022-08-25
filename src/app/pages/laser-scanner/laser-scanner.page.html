@@ -1,0 +1,36 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button [defaultHref]="'/'"></ion-back-button>
+    </ion-buttons>
+    <ion-title>Laser Scanner</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+
+  <ion-button expand="full" (click)="startScanner()">
+    <ion-icon name="scan" slot="start"></ion-icon>
+    Start
+  </ion-button>
+
+  <ion-button expand="full" (click)="stopScanner()">
+    <ion-icon name="scan" slot="start"></ion-icon>
+    Stop
+  </ion-button>
+
+  <ion-button expand="full" (click)="enableScanner()">
+    <ion-icon name="scan" slot="start"></ion-icon>
+    Enable
+  </ion-button>
+
+  <ion-button expand="full" (click)="disableScanner()">
+    <ion-icon name="scan" slot="start"></ion-icon>
+    Disable
+  </ion-button>
+
+  <p class="ion-text-center">Scanner iniciado: {{ scanStarted | json }}</p>
+  <p class="ion-text-center">Scanner habilitado: {{ scanEnabled | json }}</p>
+  <p class="ion-text-center" *ngIf="result">{{ result }}</p>
+
+</ion-content>

@@ -2,6 +2,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
 
 import { environment } from 'src/environments/environment';
 
@@ -25,7 +26,10 @@ export class DataService {
   ) { }
 
   getCompounds(): Observable<any> {
-    return this.http.post(`${BASE_URL}/compounds`, {}, this.headers);
+    return this.http.get(`${BASE_URL}/v1/compounds`, {})
+      .pipe(
+        map((res: any) => res.data)
+      );
   }
 
   getData() {

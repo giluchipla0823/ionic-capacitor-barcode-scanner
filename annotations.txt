@@ -8,3 +8,8 @@ npm install @ionic-native/uid
 
 https://www.angularfix.com/2022/01/ionic-5-how-to-get-serial-number-of.html
 https://www.freakyjolly.com/ionic-4-get-unique-device-id-other-uids-of-uuid-imei-imsi-iccid-and-mac-using-native-cordova-plugins/
+
+
+#Zebra datawedge
+http://darryncampbell.co.uk/assets/slides/20220317_ionic_plugin.pdf
+https://github.com/darryncampbell/DataWedge-Ionic-Capacitor-Demo/blob/main/src/app/home/home.page.ts

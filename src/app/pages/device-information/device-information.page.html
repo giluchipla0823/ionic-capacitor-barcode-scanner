@@ -1,0 +1,31 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button [defaultHref]="'/'"></ion-back-button>
+    </ion-buttons>
+    <ion-title>Device Information</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+
+  <ion-list *ngIf="device">
+
+    <ion-list-header>
+      <ion-label>Información de dispositivo</ion-label>
+    </ion-list-header>
+    <ion-item>
+      <ion-label>UUID</ion-label>
+      <ion-note>{{ device.uuid }}</ion-note>
+    </ion-item>
+    <ion-item>
+      <ion-label>NAME</ion-label>
+      <ion-note>{{ device.name }}</ion-note>
+    </ion-item>
+    <ion-item>
+      <ion-label>NAME</ion-label>
+      <ion-note>{{ device.imei }}</ion-note>
+    </ion-item>
+  </ion-list>
+
+</ion-content>
