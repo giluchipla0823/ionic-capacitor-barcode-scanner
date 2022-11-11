@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 import { AfterViewInit, ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
 import { AlertController, LoadingController, Platform } from '@ionic/angular';
 
@@ -41,7 +42,8 @@ export class HomePage implements OnInit {
   async update() {
     // const url = this.remoteUrl + '/update.json';
     // const url = 'assets/data/app-update/update.json';
-    const url = 'https://api.wepark.pro/api/app-update-info';
+    // const url = 'https://api.wepark.pro/api/app-update-info';
+    const url = 'https://raw.githubusercontent.com/giluchipla0823/ionic-capacitor-barcode-scanner/app-updating/android/app/release/update/app-release.json';
     const manifest = await this.http.get<Update>(url).toPromise();
 
 
@@ -86,7 +88,8 @@ export class HomePage implements OnInit {
         await loading.present();
 
         ApkUpdater.download(
-          'https://api.wepark.pro/api/app-update-download',
+          // 'https://api.wepark.pro/api/app-update-download',
+          'https://raw.githubusercontent.com/giluchipla0823/ionic-capacitor-barcode-scanner/app-updating/android/app/release/update/app-release.zip',
           {
             // zipPassword: 'secret',
             onDownloadProgress: (e) => {
