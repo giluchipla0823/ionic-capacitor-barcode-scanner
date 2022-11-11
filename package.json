@@ -9,7 +9,9 @@
     "build": "ng build",
     "test": "ng test",
     "lint": "ng lint",
-    "e2e": "ng e2e"
+    "e2e": "ng e2e",
+    "force-update:script-debug": "apk-update android/app/build/outputs/apk/debug/app-debug.apk update/",
+    "force-update:script-release": "apk-update android/app/release/app-release.apk update/"
   },
   "private": true,
   "dependencies": {
@@ -56,6 +58,7 @@
     "@types/node": "^12.11.1",
     "@typescript-eslint/eslint-plugin": "4.16.1",
     "@typescript-eslint/parser": "4.16.1",
+    "apk-update": "^1.0.2",
     "eslint": "^7.6.0",
     "eslint-plugin-import": "2.22.1",
     "eslint-plugin-jsdoc": "30.7.6",

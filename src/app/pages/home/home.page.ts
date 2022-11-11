@@ -40,11 +40,12 @@ export class HomePage implements OnInit {
   }
 
   async checkVersions() {
-
+    // script: https://github.com/kolbasa/apk-update
   }
 
   async update() {
-      const url = 'https://raw.githubusercontent.com/giluchipla0823/ionic-capacitor-barcode-scanner/app-updating/update/app-debug.json';
+      // const url = 'https://raw.githubusercontent.com/giluchipla0823/ionic-capacitor-barcode-scanner/app-updating/update/app-debug.json';
+      const url = 'https://raw.githubusercontent.com/giluchipla0823/ionic-capacitor-barcode-scanner/app-updating/update/app-release.json';
       const manifest = await this.http.get<Update>(url).toPromise();
 
       this.showUpdateInfo = true;
@@ -62,7 +63,8 @@ export class HomePage implements OnInit {
         await loading.present();
 
         ApkUpdater.download(
-          'https://raw.githubusercontent.com/giluchipla0823/ionic-capacitor-barcode-scanner/app-updating/update/app-debug.zip',
+          // 'https://raw.githubusercontent.com/giluchipla0823/ionic-capacitor-barcode-scanner/app-updating/update/app-debug.zip',
+          'https://raw.githubusercontent.com/giluchipla0823/ionic-capacitor-barcode-scanner/app-updating/update/app-release.zip',
           {
             onDownloadProgress: (e) => {
               loading.querySelector('.loading-content span').innerHTML = `${e.progress}`;
