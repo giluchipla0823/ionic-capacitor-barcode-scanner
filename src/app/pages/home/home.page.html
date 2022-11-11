@@ -19,4 +19,31 @@
   <ion-button routerLink="/laser-scanner" expand="block">
     Laser Scanner
   </ion-button>
+
+  <ion-button expand="block" (click)="update()">
+    Update app
+  </ion-button>
+
+  <ion-list *ngIf="showUpdateInfo">
+    <ion-item>
+      <ion-label>Remote versión</ion-label>
+      <ion-note slot="end">{{ remoteVersion }}</ion-note>
+    </ion-item>
+    <ion-item>
+      <ion-label>Remote versión code</ion-label>
+      <ion-note slot="end">{{ remoteVersionCode }}</ion-note>
+    </ion-item>
+    <ion-item>
+      <ion-label>Installed versión</ion-label>
+      <ion-note slot="end">{{ installedVersion }}</ion-note>
+    </ion-item>
+    <ion-item>
+      <ion-label>Installed versión code</ion-label>
+      <ion-note slot="end">{{ installedVersionCode }}</ion-note>
+    </ion-item>
+  </ion-list>
+
+  <div *ngIf="hasError">
+    {{ jsonError }}
+  </div>
 </ion-content>

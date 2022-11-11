@@ -1,0 +1,13 @@
+{
+    "name": "update.apk",
+    "size": 1566726,
+    "compressedSize": 1327288,
+    "app": {
+      "name": "Apk Updater Demo",
+      "package": "io.ionic.starter",
+      "version": {
+        "code": 10001,
+        "name": "1.0.1"
+      }
+    }
+}
