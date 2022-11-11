@@ -29,76 +29,45 @@ export class HomePage implements OnInit {
     private http: HttpClient,
     private loadingCtrl: LoadingController
   ) {
-    // this.platform.ready().then(() => {
-    //   console.log('PLATFORM READY');
+    this.platform.ready().then(() => {
+      console.log('PLATFORM READY');
 
-    //   this.update();
-    // });
+      this.checkVersions();
+    });
   }
 
   async ngOnInit() {
   }
 
+  async checkVersions() {
+
+  }
+
   async update() {
-    // const url = this.remoteUrl + '/update.json';
-    // const url = 'assets/data/app-update/update.json';
-    // const url = 'https://api.wepark.pro/api/app-update-info';
-    const url = 'https://raw.githubusercontent.com/giluchipla0823/ionic-capacitor-barcode-scanner/app-updating/android/app/release/update/app-release.json';
-    const manifest = await this.http.get<Update>(url).toPromise();
+      const url = 'https://raw.githubusercontent.com/giluchipla0823/ionic-capacitor-barcode-scanner/app-updating/update/app-debug.json';
+      const manifest = await this.http.get<Update>(url).toPromise();
 
+      this.showUpdateInfo = true;
+      this.remoteVersion = manifest.app.version.name;
+      this.remoteVersionCode = manifest.app.version.code;
 
+      const installedVersion = (await ApkUpdater.getInstalledVersion()).version;
 
-    this.showUpdateInfo = true;
-    this.remoteVersion = manifest.app.version.name;
-    this.installedVersion = (await ApkUpdater.getInstalledVersion()).version.name;
+      this.installedVersion = installedVersion.name;
+      this.installedVersionCode = installedVersion.code;
 
-    this.remoteVersionCode = manifest.app.version.code;
-    this.installedVersionCode = (await ApkUpdater.getInstalledVersion()).version.code;
-
-    // if (remoteVersionCode > installedVersionCode) {
-        // await ApkUpdater.download(
-        //     this.remote + '/update.zip',
-        //     {
-        //         zipPassword: 'aDzEsCceP3BPO5jy',
-        //         onDownloadProgress: console.log,
-        //         onUnzipProgress: console.log
-        //     }
-        // );
-
-        // ApkUpdater.download(
-        //   'https://raw.githubusercontent.com/kolbasa/cordova-plugin-apkupdater-demo/master/update/update.zip',
-        //     {
-        //         zipPassword: 'aDzEsCceP3BPO5jy',
-                // onDownloadProgress: (e) => {
-                //     console.log('Downloading: ' + e.progress + '%');
-                // },
-        //         onUnzipProgress: (e) => {
-        //             console.log('Unzipping: ' + e.progress + '%');
-        //         }
-        //     },
-        //     (resp) => {
-        //         console.log('Update can be installed now', resp);
-        //     },
-        // );
-
-      // if (remoteVersionCode > installedVersionCode) {
-      if (true) {
+      if (this.remoteVersionCode > this.installedVersionCode) {
         const loading = await this.loadingCtrl.create({ message: `Descargando... <span>0</span>%` });
 
         await loading.present();
 
         ApkUpdater.download(
-          // 'https://api.wepark.pro/api/app-update-download',
-          'https://raw.githubusercontent.com/giluchipla0823/ionic-capacitor-barcode-scanner/app-updating/android/app/release/update/app-release.zip',
+          'https://raw.githubusercontent.com/giluchipla0823/ionic-capacitor-barcode-scanner/app-updating/update/app-debug.zip',
           {
-            // zipPassword: 'secret',
             onDownloadProgress: (e) => {
               loading.querySelector('.loading-content span').innerHTML = `${e.progress}`;
               console.log('Downloading: ' + e.progress + '%');
             },
-            // onUnzipProgress: (e) => {
-            //   console.log('Unzipping: ' + e.progress + '%');
-            // }
           },
           async () => {
               this.jsonError = null;
@@ -111,7 +80,16 @@ export class HomePage implements OnInit {
 
               await alert.onDidDismiss();
 
-              ApkUpdater.install();
+              ApkUpdater.install(
+                () => {
+                  console.log('aplicación instalada');
+                },
+                async () => {
+                  const alert2 = await this.alertCtrl.create({ message: 'Creo que algo paso mientras instalabas' });
+
+                  await alert2.present();
+                }
+              );
           },
           async (err) => {
             this.jsonError = JSON.stringify(err);
@@ -123,6 +101,10 @@ export class HomePage implements OnInit {
             await alert.present();
           }
         );
+      } else {
+        const alert = await this.alertCtrl.create({ message: 'La aplicación está actualizada' });
+
+        await alert.present();
       }
 
       // WITH ZIP
